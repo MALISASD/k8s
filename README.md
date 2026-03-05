@@ -60,15 +60,36 @@
 7. 回滚版本
 
 ### 3.3 排障能力（必须训练）
-建议至少熟练以下命令：
+建议至少熟练以下命令（按场景记忆更高效）：
 
 ```bash
+# 资源排查
 kubectl get pods -A
+kubectl get deploy,svc,ing -n <ns>
+kubectl get pod <pod-name> -n <ns> -o wide
 kubectl describe pod <pod-name> -n <ns>
+kubectl top pod -n <ns>
+
+# 日志与事件
 kubectl logs <pod-name> -n <ns>
+kubectl logs -f <pod-name> -n <ns>
+kubectl logs <pod-name> -c <container-name> -n <ns>
 kubectl get events -n <ns> --sort-by=.metadata.creationTimestamp
+
+# 连通性与交互式排查
+kubectl exec -it <pod-name> -n <ns> -- /bin/sh
+kubectl port-forward svc/<svc-name> 8080:80 -n <ns>
+kubectl get endpoints <svc-name> -n <ns>
+
+# 发布与回滚
 kubectl rollout status deployment/<name> -n <ns>
+kubectl rollout history deployment/<name> -n <ns>
 kubectl rollout undo deployment/<name> -n <ns>
+
+# 配置与变更核对
+kubectl diff -f manifests/
+kubectl apply -f manifests/ --dry-run=client
+kubectl get configmap,secret -n <ns>
 ```
 
 ---
